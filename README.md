@@ -26,19 +26,67 @@ It covers **data cleaning, transformation, exploratory data analysis (EDA), and 
 ---
 
 ## 🛠 SQL Operations Performed
-
+**Create Table**
+```sql
+CREATE TABLE zepto (
+    sku_id SERIAL PRIMARY KEY,
+    category VARCHAR(120),
+    name VARCHAR(120),
+    mrp NUMERIC(8,2),
+    discountPercent NUMERIC(5,2),
+    availableQuantity INTEGER,
+    discountedSellingPrice NUMERIC(8,2),
+    weightInGms INTEGER,
+    outOfStock BOOLEAN,
+    quentity INTEGER
+);
+```
 ### **1️⃣ Data Exploration**
 
 * Count total rows and view sample data.
+```sql
+  SELECT COUNT(*) FROM zepto;
+```
 * Identify null values in important columns.
+```sql
+  SELECT * FROM zepto
+WHERE name IS NULL
+   OR category IS NULL
+   OR mrp IS NULL
+   OR discountPercent IS NULL
+   OR discountedSellingPrice IS NULL
+   OR weightInGms IS NULL
+   OR availableQuantity IS NULL
+   OR outOfStock IS NULL
+   OR quentity IS NULL;
+```
 * List unique product categories.
+```sql
+SELECT DISTINCT category
+FROM zepto
+ORDER BY category;
+```
 * Stock status analysis (**in stock vs out of stock**).
-
+```sql
+SELECT outOfStock, COUNT(sku_id) AS total_products
+FROM zepto
+GROUP BY outOfStock;
+```
 ### **2️⃣ Data Cleaning**
-
 * Remove products with zero price.
-* Convert prices from paise to rupees.
+```sql
+SELECT * FROM zepto
+WHERE mrp = 0 OR discountedSellingPrice = 0;
 
+DELETE FROM zepto
+WHERE mrp = 0;
+```
+* Convert prices from paise to rupees.
+```sql
+UPDATE zepto
+SET mrp = mrp / 100.0,
+    discountedSellingPrice = discountedSellingPrice / 100.0;
+```
 ### **3️⃣ Analysis & Insights**
 
 * **Top 10 best-value products** based on discount percentage.
